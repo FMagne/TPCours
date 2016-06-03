@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html ng-app="gemStore">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+        <script type="application/javascript" src="angular.min.js"></script>
+        <script type="text/javascript" src="app.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div ng-controller="StoreController as store">
+                <div class ='row'>
+                    <H1 style="text-align:center">
+                        {{"Bienvenue dans ma boutique de pierres précieuses"}}
+                    </H1>
+                </div>
+                <div class ='row'>
+                    <section ng-init="tab=1" class="col-xs-offset-1 col-md-offset-2 col-lg-offset-2 col-xs-10 col-md-8 col-lg-8">
+                        <ul class="nav nav-pills">
+                            <li ng-class="{ active:tab ===1}"><a href ng-click="tab = 1">Description</a></li>
+                            <li ng-class="{ active:tab ===2}"><a href ng-click="tab = 2">Specification</a></li>
+                            <li ng-class="{ active:tab ===3}"><a href ng-click="tab = 3">Reviews</a></li>
+                        </ul>
+                    </section>
+                </div>
+                <div class ='row'>
+                    <div class="col-xs-offset-1 col-md-offset-2 col-lg-offset-2 col-xs-10 col-md-8 col-lg-8">
+                        <table class="table table-striped table-hover">
+                            <thead style="cursor:pointer">
+                                <th>Photo</th>
+                                <th ng-click="store.reverseFilter('name')">Name</th>
+                                <th ng-click="store.reverseFilter('description')">
+                                    <span class="panel" ng-show="tab===1">Description</span>
+                                    <span class="panel" ng-show="tab===2">Specification</span>
+                                    <span class="panel" ng-show="tab===3">Reviews</span></th>
+                                <th ng-click="store.reverseFilter('price')">Price</th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="product in store.products | orderBy: store.search : store.reverse track by $index "  ng-show ="!product.soldOut" ng-init="productIndex = $index" >
+                                    <td >
+                                        <img style="width:100px;" ng-src="{{product.imageselected}}" ng-click="store.isshowgalery()"/>
+                                        <div>
+                                            <span ng-repeat="image in product.images" ng-show="store.showgalery" >
+                                                 <img style="width:50px;" src="{{image}}" ng-click="store.changeImage(productIndex,image)"/>
+                                            </span>
+                                       </div>
+                                    </td>
+                                    <td style="vertical-align:middle">{{product.name}}</td>
+                                    <td style="vertical-align:middle">
+                                        <div class="panel" ng-show="tab===1">
+                                            {{product.description}}</div>
+                                        <div class="panel" ng-show="tab===2">
+                                            Rareté: {{product.rarity}}<br/>
+                                            Color: {{product.color }}<br/>
+                                            Faces: {{product.faces}}<br/>
+                                            Shine: {{product.shine}}<br/></div>
+                                        <div class="panel" ng-show="tab===3" ng-repeat="review in product.reviews">
+                                            Stars : {{review.stars}}<br/>
+                                            Author : {{review.author}}<br/>
+                                            Created on : {{review.createdOn | date : DD/MM/YYYY}}
+                                            <blockquote>{{review.body}}</blockquote>
+                                        </div>
+                                        <div class="panel" ng-show="tab===3" style="text-align:center">
+                                            <button style="display:inline-block" ng-click="store.showForm=!store.showForm;" class="btn btn-primary btn-sm">Create reviews</button>
+                                            <div ng-show='store.showForm'>
+                                                <form name="reviewForm" ng-controller="ReviewController as reviewCtrl" ng-submit="reviewCtrl.addReview(product)">
+                                                        Stars : {{reviewCtrl.review.stars}}<br/>
+                                                        Author : {{reviewCtrl.review.author}}<br/>
+                                                        <blockquote>{{reviewCtrl.review.body}}</blockquote>
+                                                     <h4>Ecrire commentaire</h4>
+                                                     <fieldset class="form-group">
+                                                       <select ng-model="reviewCtrl.review.stars" ng-options="stars for stars in [5,4,3,2,1]" title="Stars" required>
+                                                       </select>
+                                                     </fieldset>
+                                                    <fieldset class="form-group">
+                                                       <input type="email" class="form-control" placeholder="nom.prenom@example.com" title="Email" ng-model="reviewCtrl.review.author"/>
+                                                     </fieldset>
+                                                     <fieldset class="form-group">
+                                                       <textarea class="form-control" placeholder="Ecrire un commentaire" title="Commentaire" ng-model="reviewCtrl.review.body"></textarea>
+                                                     </fieldset>
+
+                                                     <fieldset class="form-group">
+                                                       <input type="submit" class="btn btn-primary pull-right" value="Envoyer" />
+                                                     </fieldset>
+                                               </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="vertical-align:middle">{{product.price | currency : '€' : 2}}</td>
+                                    <td style="vertical-align:middle">
+                                        <button  class="product btn btn-primary btn-sm btn-block" ng-show="product.canPurchase" >Add to Cart</button>
+                                         <button  class="product btn btn-warning btn-sm btn-block" ng-hide="product.canPurchase" disabled="disabled">Can't Purchase</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
