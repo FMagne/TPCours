@@ -5,6 +5,14 @@
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
         <script type="application/javascript" src="angular.min.js"></script>
         <script type="text/javascript" src="app.js"></script>
+        <style>
+            .ng-invalid.ng-dirty{
+                border-color: darkred;
+            }
+            .ng-valid.ng-dirty{
+                border-color: yellow;
+            }
+        </style>
     </head>
     <body>
         <div class="container-fluid">
@@ -64,7 +72,7 @@
                                         <div class="panel" ng-show="tab===3" style="text-align:center">
                                             <button style="display:inline-block" ng-click="store.showForm=!store.showForm;" class="btn btn-primary btn-sm">Create reviews</button>
                                             <div ng-show='store.showForm'>
-                                                <form name="reviewForm" ng-controller="ReviewController as reviewCtrl" ng-submit="reviewCtrl.addReview(product)">
+                                                <form name="reviewForm" ng-controller="ReviewController as reviewCtrl" ng-submit="reviewForm.$valid && reviewCtrl.addReview(product)">
                                                         Stars : {{reviewCtrl.review.stars}}<br/>
                                                         Author : {{reviewCtrl.review.author}}<br/>
                                                         <blockquote>{{reviewCtrl.review.body}}</blockquote>
@@ -74,7 +82,7 @@
                                                        </select>
                                                      </fieldset>
                                                     <fieldset class="form-group">
-                                                       <input type="email" class="form-control" placeholder="nom.prenom@example.com" title="Email" ng-model="reviewCtrl.review.author"/>
+                                                       <input type="email" class="form-control" placeholder="nom.prenom@example.com" title="Email" ng-model="reviewCtrl.review.author" required/>
                                                      </fieldset>
                                                      <fieldset class="form-group">
                                                        <textarea class="form-control" placeholder="Ecrire un commentaire" title="Commentaire" ng-model="reviewCtrl.review.body"></textarea>
