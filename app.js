@@ -1,7 +1,70 @@
 (function () {
     "use strict";
-    var app = angular.module('gemStore', []),
-        gems = [
+    var app = angular.module('gemStore', [])
+        .directive('specification', function(){
+            return {
+                restrict: 'E',
+                templateUrl: 'specification.html',
+            };
+         })
+        .directive('description', function(){
+            return {
+                restrict: 'E',
+                template: '{{product.description}}',
+            };
+         })
+        .directive('reviews', function(){
+            return {
+                restrict: 'E',
+                templateUrl: 'reviews.html',
+            };
+         })
+        .directive('formulaireGem', function(){
+            return {
+                restrict: 'E',
+                templateUrl: 'formulairegem.html',
+                controller: function  ReviewController() {
+                    this.review = {};
+
+                    this.addReview = function(product){
+                        this.review.createdOn = Date.now();
+                        product.reviews.push(this.review);
+                    }
+                },
+                controllerAs : 'reviewCtrl'
+            };
+         });
+
+    app.controller('StoreController', function () {
+        this.products = gems;
+        this.search = 'name';
+        this.reverse = false;
+        this.showgalery = false;
+        this.showForm = false;
+
+        this.selTab = function (param){
+            this.tab= param;
+        }
+        this.isTabSel = function(param){
+            return this.tab===param;
+        }
+        this.reverseFilter = function(param){
+            if(this.search!= param){
+                this.search=param;
+                this.reverse =false;
+            }else
+                this.reverse = !this.reverse;
+        }
+        this.isshowgalery = function(){
+            this.showgalery = !this.showgalery;
+        }
+        this.changeImage = function(i,srcimg){
+            this.products[i].imageselected = srcimg;
+        }
+
+    });
+
+    var gems = [
           {
             name: 'Azurite',
             description: "Some gems have hidden qualities beyond their luster, beyond their shine... Azurite is one of those gems.",
@@ -92,36 +155,5 @@
             }]
           }
     ];
-
-    app.controller('StoreController', function () {
-        this.products = gems;
-        this.search = 'name';
-        this.reverse = false;
-        this.showgalery = false;
-        this.showForm = false;
-
-        this.reverseFilter = function(param){
-            if(this.search!= param){
-                this.search=param;
-                this.reverse =false;
-            }else
-                this.reverse = !this.reverse;
-        }
-        this.isshowgalery = function(){
-            this.showgalery = !this.showgalery;
-        }
-        this.changeImage = function(i,srcimg){
-            this.products[i].imageselected = srcimg;
-        }
-
-    });
-    app.controller('ReviewController', function () {
-        this.review = {};
-
-        this.addReview = function(product){
-            this.review.createdOn = Date.now();
-            product.reviews.push(this.review);
-        }
-    });
 
 })();

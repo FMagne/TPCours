@@ -23,11 +23,11 @@
                     </H1>
                 </div>
                 <div class ='row'>
-                    <section ng-init="tab=1" class="col-xs-offset-1 col-md-offset-2 col-lg-offset-2 col-xs-10 col-md-8 col-lg-8">
+                    <section ng-init="store.selTab(1)" class="col-xs-offset-1 col-md-offset-2 col-lg-offset-2 col-xs-10 col-md-8 col-lg-8">
                         <ul class="nav nav-pills">
-                            <li ng-class="{ active:tab ===1}"><a href ng-click="tab = 1">Description</a></li>
-                            <li ng-class="{ active:tab ===2}"><a href ng-click="tab = 2">Specification</a></li>
-                            <li ng-class="{ active:tab ===3}"><a href ng-click="tab = 3">Reviews</a></li>
+                            <li ng-class="{ active:store.isTabSel(1)}"><a href ng-click="store.selTab(1)">Description</a></li>
+                            <li ng-class="{ active:store.isTabSel(2)}"><a href ng-click="store.selTab(2)">Specification</a></li>
+                            <li ng-class="{ active:store.isTabSel(3)}"><a href ng-click="store.selTab(3)">Reviews</a></li>
                         </ul>
                     </section>
                 </div>
@@ -38,9 +38,9 @@
                                 <th>Photo</th>
                                 <th ng-click="store.reverseFilter('name')">Name</th>
                                 <th ng-click="store.reverseFilter('description')">
-                                    <span class="panel" ng-show="tab===1">Description</span>
-                                    <span class="panel" ng-show="tab===2">Specification</span>
-                                    <span class="panel" ng-show="tab===3">Reviews</span></th>
+                                    <span class="panel" ng-show="store.isTabsel(1)">Description</span>
+                                    <span class="panel" ng-show="store.isTabsel(2)">Specification</span>
+                                    <span class="panel" ng-show="store.isTabsel(3)">Reviews</span></th>
                                 <th ng-click="store.reverseFilter('price')">Price</th>
                                 <th></th>
                             </thead>
@@ -56,42 +56,18 @@
                                     </td>
                                     <td style="vertical-align:middle">{{product.name}}</td>
                                     <td style="vertical-align:middle">
-                                        <div class="panel" ng-show="tab===1">
-                                            {{product.description}}</div>
-                                        <div class="panel" ng-show="tab===2">
-                                            Rareté: {{product.rarity}}<br/>
-                                            Color: {{product.color }}<br/>
-                                            Faces: {{product.faces}}<br/>
-                                            Shine: {{product.shine}}<br/></div>
-                                        <div class="panel" ng-show="tab===3" ng-repeat="review in product.reviews">
-                                            Stars : {{review.stars}}<br/>
-                                            Author : {{review.author}}<br/>
-                                            Created on : {{review.createdOn | date : DD/MM/YYYY}}
-                                            <blockquote>{{review.body}}</blockquote>
+                                         <div class="panel" ng-show="store.isTabSel(1)"><description></description>
+                                            </div>
+                                        <div class="panel" ng-show="store.isTabSel(2)">
+                                            <specification ></specification>
                                         </div>
-                                        <div class="panel" ng-show="tab===3" style="text-align:center">
+                                        <div class="panel" ng-show="store.isTabSel(3)" >
+                                            <reviews ng-repeat="review in product.reviews"></reviews>
+                                        </div>
+                                        <div class="panel" ng-show="store.isTabSel(3)" style="text-align:center">
                                             <button style="display:inline-block" ng-click="store.showForm=!store.showForm;" class="btn btn-primary btn-sm">Create reviews</button>
                                             <div ng-show='store.showForm'>
-                                                <form name="reviewForm" ng-controller="ReviewController as reviewCtrl" ng-submit="reviewForm.$valid && reviewCtrl.addReview(product)">
-                                                        Stars : {{reviewCtrl.review.stars}}<br/>
-                                                        Author : {{reviewCtrl.review.author}}<br/>
-                                                        <blockquote>{{reviewCtrl.review.body}}</blockquote>
-                                                     <h4>Ecrire commentaire</h4>
-                                                     <fieldset class="form-group">
-                                                       <select ng-model="reviewCtrl.review.stars" ng-options="stars for stars in [5,4,3,2,1]" title="Stars" required>
-                                                       </select>
-                                                     </fieldset>
-                                                    <fieldset class="form-group">
-                                                       <input type="email" class="form-control" placeholder="nom.prenom@example.com" title="Email" ng-model="reviewCtrl.review.author" required/>
-                                                     </fieldset>
-                                                     <fieldset class="form-group">
-                                                       <textarea class="form-control" placeholder="Ecrire un commentaire" title="Commentaire" ng-model="reviewCtrl.review.body"></textarea>
-                                                     </fieldset>
-
-                                                     <fieldset class="form-group">
-                                                       <input type="submit" class="btn btn-primary pull-right" value="Envoyer" />
-                                                     </fieldset>
-                                               </form>
+                                                <formulaire-gem product="{{product}}"></formulaire-gem>
                                             </div>
                                         </div>
                                     </td>
